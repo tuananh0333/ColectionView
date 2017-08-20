@@ -47,13 +47,38 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func getReposData(){
+//        guard let url = URL(string: constants.URLString)
+//            else { return }
+//        URLSession.shared.dataTask(with: url, completionHandler: {(data, response, error) -> Void in
+//            if error == nil && data != nil{
+//                do{
+//                    let repo = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableContainers) as! [[String: Any]]
+//                    for dictRepo in repo{
+//                        let repos = ReposModel(with: dictRepo)
+//                        self.listRepos.append(repos)
+//                        print(dictRepo)
+//                    }
+//                    DispatchQueue.main.async {
+//                        self.Collect_list.reloadData()
+//                    }
+//                }
+//                catch{
+//                    print("Error")
+//                }
+//            }
+//            else if error != nil{
+//                print(error.debugDescription)
+//            }
+//        }).resume()
         guard let url = URL(string: constants.URLString)
-            else { return }
-        URLSession.shared.dataTask(with: url, completionHandler: {(data, response, error) -> Void in
-            if error == nil && data != nil{
-                do{
-                    let repo = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableContainers) as! [[String: Any]]
-                    for dictRepo in repo{
+                   else { return }
+        let _headers: HTTPHeaders = ["Accept": "application/json"]
+
+        Alamofire.request(url, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: _headers).responseJSON { (response:DataResponse<Any>) in
+            switch(response.result) {
+            case .success(let value):
+                if let jsonArray = value as? [[String: Any]] {
+                    for dictRepo in jsonArray{
                         let repos = ReposModel(with: dictRepo)
                         self.listRepos.append(repos)
                         print(dictRepo)
@@ -61,17 +86,39 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                     DispatchQueue.main.async {
                         self.Collect_list.reloadData()
                     }
+                    print(value)
                 }
-                catch{
-                    print("Error")
-                }
+                break
+                
+            case .failure(let error):
+                print(error)
+                break
+                
             }
-            else if error != nil{
-                print(error.debugDescription)
-            }
-        }).resume()
+        }
     }
 
+        //        Alamofire.request(
+//            url,
+//            method: .get,
+//            encoding: PropertyListEncoding(format: .binary, options: 0)).responsePropertyList { (response) in
+//                print(response)
+//                do{
+                    //                    let repo = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableContainers) as! [[String: Any]]
+                    //                    for dictRepo in repo{
+                    //                        let repos = ReposModel(with: dictRepo)
+                    //                        self.listRepos.append(repos)
+                    //                        print(dictRepo)
+                    //                    }
+                    //                    DispatchQueue.main.async {
+                    //                        self.Collect_list.reloadData()
+                    //                    }
+                    //                }
+                    //                catch{
+                    //                    print("Error")
+                    //                }
+//                                }
+//        }
 
 }
 
