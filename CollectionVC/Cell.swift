@@ -20,6 +20,7 @@ class Cell: UICollectionViewCell {
         lbl_UserName.text = owner.ownerName
         self.downLoadImage(owner: owner)
     }
+    
     func downLoadImage(owner: Owner){
         guard let url = URL(string:owner.ownerAvatar) else{ return }
         
